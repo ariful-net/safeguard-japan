@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang}" lang="ja">
+<head>
+  <title th:text="#{alert.title}">警報詳細</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+  <link rel="stylesheet" th:href="@{/css/pages.css}">
+</head>
+<body class="page-alert">
+<div class="offline-banner" th:text="#{common.offline}">オフラインです</div>
+<div th:replace="~{fragments/layout :: weatherBar}"></div>
+<header th:replace="~{fragments/layout :: siteHeader('alert', false)}"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container alert-hero">
+      <div>
+        <span class="eyebrow" th:text="#{alert.card.label}">最新の地震情報</span>
+        <h1 class="display" th:text="#{alert.heading}">いま、何をするか</h1>
+        <p class="lead" th:text="#{alert.lead}">災害の種類を選ぶと…</p>
+      </div>
+
+      <!-- 震度・地域・発表時刻（AlertInfo） -->
+      <aside class="alert-card alert-card--static" id="alertCard"
+             th:attr="data-level=${alert.level()},data-status=${alert.status()}" aria-live="polite">
+        <div class="alert-card-head">
+          <span class="alert-pulse" aria-hidden="true"></span>
+          <span class="alert-card-label" th:text="#{alert.card.label}">最新の地震情報</span>
+          <span class="alert-card-auto mono" th:text="#{alert.auto}">60秒ごとに自動更新</span>
+        </div>
+        <div class="alert-card-body" id="alertBody">
+          <th:block th:if="${alert.status() == 'OK'}">
+            <div class="alert-shindo" th:text="${alert.intensityText()}">震度4</div>
+            <div class="alert-meta">
+              <span><span class="muted" th:text="#{alert.area}">震源</span> <b th:text="${alert.area()}">—</b></span>
+              <span th:if="${alert.magnitude() != null}"><span class="muted" th:text="#{alert.magnitude}">M</span> <b th:text="${alert.magnitude()}">—</b></span>
+            </div>
+            <time class="alert-time mono" th:attr="datetime=${alert.reportedAt()}" th:text="${alert.reportedAt()}"></time>
+            <p class="alert-msg" th:text="${alert.title()}">震源・震度情報</p>
+            <p class="alert-msg" th:text="#{alert.level.__${alert.level()}__}">—</p>
+            <p class="alert-stale" th:if="${alert.stale()}" th:text="#{alert.stale}"></p>
+          </th:block>
+          <p class="alert-msg" th:if="${alert.status() == 'NONE'}" th:text="#{alert.none}">—</p>
+          <p class="alert-msg" th:if="${alert.status() == 'OFFLINE'}" th:text="#{alert.offline}">—</p>
+        </div>
+        <p class="alert-source muted" th:text="#{alert.source}">出典: 気象庁</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="type-tabs" role="list">
+        <a role="listitem" class="type-tab" th:classappend="${type == 'earthquake'} ? 'is-active'"
+           th:href="@{/alert-info(type='earthquake',lang=${lang})}" th:text="#{type.earthquake}">地震</a>
+        <a role="listitem" class="type-tab" th:classappend="${type == 'tsunami'} ? 'is-active'"
+           th:href="@{/alert-info(type='tsunami',lang=${lang})}" th:text="#{type.tsunami}">津波</a>
+        <a role="listitem" class="type-tab" th:classappend="${type == 'flood'} ? 'is-active'"
+           th:href="@{/alert-info(type='flood',lang=${lang})}" th:text="#{type.flood}">洪水・大雨</a>
+      </div>
+
+      <ol class="steps">
+        <li class="step" th:each="s, st : ${steps}">
+          <span class="step-n mono" th:text="${st.count < 10 ? '0' + st.count : st.count}">01</span>
+          <p class="step-text" th:text="${s.text()}">—</p>
+        </li>
+      </ol>
+
+      <div class="hero-cta">
+        <a class="btn btn-primary" th:href="@{/shelters(type=${type},lang=${lang})}">
+          <span th:text="#{home.cta.shelter}">近くの避難所を探す</span><span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="btn" th:href="@{/safety-status(lang=${lang})}" th:text="#{nav.sendSafety}">安否メッセージを作る</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section th:replace="~{fragments/layout :: emergency}"></section>
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script th:src="@{/js/alert.js}"></script>
+</body>
+</html>

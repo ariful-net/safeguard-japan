@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang}" lang="ja">
+<head>
+  <title th:text="#{sh.title}">避難所マップ</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/vendor/leaflet/leaflet.css}">
+  <link rel="stylesheet" th:href="@{/css/shelters.css}">
+</head>
+<body class="page-shelters">
+<div class="offline-banner" th:text="#{common.offline}">オフラインです</div>
+<div th:replace="~{fragments/layout :: weatherBar}"></div>
+<header th:replace="~{fragments/layout :: siteHeader('shelters', false)}"></header>
+
+<main id="main" class="shelter-app">
+  <!-- ========== 左パネル ========== -->
+  <section class="sh-panel" aria-labelledby="shHeading">
+    <div class="sh-panel-head">
+      <span class="eyebrow" th:text="#{sh.chapter}">CHAPTER 03 — 避難所</span>
+      <h1 class="sh-heading" id="shHeading" th:text="#{sh.heading}">近くの避難所と、そこまでの道。</h1>
+      <p class="sh-lead muted" th:text="#{sh.lead}">現在地から近い順に最大10件。</p>
+    </div>
+
+    <!-- 検索条件（ShelterSearchForm） -->
+    <form class="sh-form" id="shForm" novalidate>
+      <fieldset class="sh-types">
+        <legend class="sh-label" th:text="#{sh.type}">災害の種類</legend>
+        <label class="seg"><input type="radio" name="type" value="" checked><span th:text="#{type.all}">すべて</span></label>
+        <label class="seg"><input type="radio" name="type" value="earthquake"><span th:text="#{type.earthquake}">地震</span></label>
+        <label class="seg"><input type="radio" name="type" value="tsunami"><span th:text="#{type.tsunami}">津波</span></label>
+        <label class="seg"><input type="radio" name="type" value="flood"><span th:text="#{type.flood}">洪水・大雨</span></label>
+      </fieldset>
+
+      <div class="sh-radius">
+        <label class="sh-label" for="shRadius"><span th:text="#{sh.radius}">検索半径</span>
+          <output id="shRadiusOut" for="shRadius" class="mono">3 km</output></label>
+        <input type="range" id="shRadius" name="radius" min="1" max="20" step="1" value="3">
+      </div>
+
+      <div class="sh-actions">
+        <button type="submit" class="btn btn-primary" id="shGps">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5" fill="currentColor"/><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span th:text="#{sh.useGps}">現在地で検索</span>
+        </button>
+      </div>
+    </form>
+
+    <p class="sh-status" id="shStatus" role="status" aria-live="polite"></p>
+
+    <!-- 検索結果 -->
+    <div class="sh-results" id="shResults" hidden>
+      <div class="sh-count"><b id="shCount" class="mono">0</b> <span th:text="#{sh.results}">件の避難所</span></div>
+      <ol class="sh-list" id="shList"></ol>
+    </div>
+
+    <!-- ナビゲーション -->
+    <div class="sh-nav" id="shNav" hidden>
+      <div class="sh-nav-top">
+        <span class="eyebrow" th:text="#{nav.title}">ナビゲーション</span>
+        <button type="button" class="btn btn-sm" id="navStop" th:text="#{nav.stop}">案内を終了</button>
+      </div>
+      <h2 class="sh-nav-dest" id="navDest">—</h2>
+      <div class="sh-nav-stats">
+        <div><span class="k" th:text="#{nav.remaining}">残り</span><span class="v mono" id="navRemain">—</span></div>
+        <div><span class="k" th:text="#{nav.direction}">方角</span>
+          <span class="v"><svg id="navArrow" class="nav-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l6 18-6-4-6 4z" fill="currentColor"/></svg><span id="navDir">—</span></span></div>
+      </div>
+      <p class="sh-nav-eta" id="navEta"></p>
+      <p class="sh-nav-msg" id="navMsg" role="status" aria-live="polite"></p>
+      <ol class="sh-steps" id="navSteps"></ol>
+      <div class="sh-nav-actions">
+        <a class="btn btn-sm" id="navGmaps" target="_blank" rel="noopener" th:text="#{sh.gmaps}">Google マップ</a>
+        <a class="btn btn-sm btn-primary" id="navSafety" hidden th:href="@{/safety-status(lang=${lang})}" th:text="#{nav.sendSafety}">安否メッセージを作る</a>
+      </div>
+    </div>
+
+    <p class="sh-sample" th:text="#{sh.sample}">※ サンプルデータです。</p>
+  </section>
+
+  <!-- ========== 地図 ========== -->
+  <section class="sh-map-wrap" aria-label="Map">
+    <div id="map" class="sh-map"></div>
+    <p class="sh-map-offline" th:text="#{sh.mapOffline}">地図はオンライン時のみ表示されます。</p>
+  </section>
+</main>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script th:src="@{/vendor/leaflet/leaflet.js}"></script>
+<script th:src="@{/js/shelters.js}"></script>
+</body>
+</html>

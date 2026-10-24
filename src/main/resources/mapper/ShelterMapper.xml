@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- SQLインジェクション対策: #{} のみ使用、${} は禁止（詳細設計書 10.2） -->
+<mapper namespace="jp.safeguard.mapper.ShelterMapper">
+
+    <resultMap id="shelterMap" type="jp.safeguard.model.entity.Shelter">
+        <id     property="id"         column="id"/>
+        <result property="nameJa"     column="name_ja"/>
+        <result property="nameEn"     column="name_en"/>
+        <result property="address"    column="address"/>
+        <result property="latitude"   column="latitude"/>
+        <result property="longitude"  column="longitude"/>
+        <result property="earthquake" column="is_earthquake"/>
+        <result property="tsunami"    column="is_tsunami"/>
+        <result property="flood"      column="is_flood"/>
+        <result property="capacity"   column="capacity"/>
+    </resultMap>
+
+    <sql id="columns">
+        id, name_ja, name_en, address, latitude, longitude,
+        is_earthquake, is_tsunami, is_flood, capacity
+    </sql>
+
+    <select id="findInBox" resultMap="shelterMap">
+        SELECT <include refid="columns"/>
+          FROM shelters
+         WHERE latitude  BETWEEN #{minLat} AND #{maxLat}
+           AND longitude BETWEEN #{minLon} AND #{maxLon}
+        <choose>
+            <when test="type == 'earthquake'"> AND is_earthquake = 1 </when>
+            <when test="type == 'tsunami'">    AND is_tsunami = 1 </when>
+            <when test="type == 'flood'">      AND is_flood = 1 </when>
+        </choose>
+    </select>
+
+    <select id="findById" resultMap="shelterMap">
+        SELECT <include refid="columns"/>
+          FROM shelters
+         WHERE id = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: safeguard-japan
+
+  # アプリ用DBユーザーは SELECT 権限のみ（db/00_create_user.sql）
+  datasource:
+    url: jdbc:mariadb://localhost:3306/safeguard?useUnicode=true&characterEncoding=utf8
+    username: ${DB_USER:safeguard_app}
+    password: ${DB_PASSWORD:change-me}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  # 多言語メッセージ messages_ja/en/bn/vi.properties
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
+  # 災害時のアクセス集中対策: 取得結果を60秒保持
+  cache:
+    type: caffeine
+    cache-names: alerts,weather
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=60s
+
+  thymeleaf:
+    cache: true
+
+  mvc:
+    format:
+      date-time: iso
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+  # 本番は HTTPS 必須（Geolocation API と Service Worker は HTTPS でしか動かない）
+  # localhost は例外として HTTP でも動く
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+app:
+  http:
+    timeout-ms: 3000
+  jma:
+    quake-list-url: https://www.jma.go.jp/bosai/quake/data/list.json
+  weather:
+    base-url: https://api.open-meteo.com/v1/forecast
+  # GPS 拒否時のデフォルト位置（大阪駅）
+  default-location:
+    lat: 34.7025
+    lon: 135.4959
+
+logging:
+  level:
+    root: INFO
+    # リクエストのクエリ文字列（緯度経度）をログに出さない
+    org.springframework.web: WARN

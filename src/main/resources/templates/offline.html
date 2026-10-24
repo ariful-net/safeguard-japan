@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- Service Worker が、未保存の画面をオフラインで開いたときに返す画面 -->
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang}" lang="ja">
+<head>
+  <title th:text="#{offline.title}">オフライン</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/pages.css}">
+</head>
+<body class="page-offline">
+<main id="main" class="center-page">
+  <div class="container narrow">
+    <span class="eyebrow mono">OFFLINE</span>
+    <h1 class="display" th:text="#{offline.heading}">オフラインです。</h1>
+    <p class="lead" th:text="#{offline.lead}">保存済みの画面は使えます。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="/" th:text="#{nav.home}">ホーム</a>
+      <a class="btn" href="/shelters" th:text="#{nav.shelters}">避難所</a>
+      <a class="btn" href="/prepare" th:text="#{nav.prepare}">備え</a>
+      <a class="btn" href="/safety-status" th:text="#{nav.safety}">安否</a>
+    </div>
+  </div>
+</main>
+<section th:replace="~{fragments/layout :: emergency}"></section>
+</body>
+</html>

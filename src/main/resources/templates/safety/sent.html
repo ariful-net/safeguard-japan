@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang}" lang="ja">
+<head>
+  <title th:text="#{safety.sent.title}">送信の準備ができました</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/pages.css}">
+</head>
+<body class="page-sent">
+<div th:replace="~{fragments/layout :: weatherBar}"></div>
+<header th:replace="~{fragments/layout :: siteHeader('safety', false)}"></header>
+
+<main id="main" class="center-page">
+  <div class="container narrow">
+    <div class="done-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="#3fb68b" stroke-width="1.5"/><path d="M19 33l9 9 18-20" fill="none" stroke="#3fb68b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1 class="display" th:text="#{safety.sent.heading}">メッセージを送りました。</h1>
+    <p class="lead" th:text="#{safety.sent.lead}">返事が来なくても…</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" th:href="@{/shelters(lang=${lang})}">
+        <span th:text="#{home.cta.shelter}">近くの避難所を探す</span><span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="btn" th:href="@{/alert-info(lang=${lang})}" th:text="#{alert.heading}">いま、何をするか</a>
+      <a class="btn btn-ghost" th:href="@{/safety-status(lang=${lang})}" th:text="#{safety.sent.again}">もう一度作る</a>
+    </div>
+  </div>
+</main>
+
+<section th:replace="~{fragments/layout :: emergency}"></section>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

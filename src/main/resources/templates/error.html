@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!-- 共通エラー画面（DB障害など / 詳細設計書 9.4）。Spring Boot の /error からも使われる。 -->
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang} ?: 'ja'" lang="ja">
+<head>
+  <title th:text="#{error.title}">エラー</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/pages.css}">
+</head>
+<body class="page-error">
+<main id="main" class="center-page">
+  <div class="container narrow">
+    <span class="eyebrow mono" th:text="${status} ?: 'ERROR'">503</span>
+    <h1 class="display" th:text="#{error.heading}">ただいま利用できません。</h1>
+    <p class="lead" th:text="#{error.lead}">サーバーに接続できません。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" th:href="@{/}" th:text="#{common.home}">ホームへ</a>
+      <a class="btn" href="tel:119">119</a>
+      <a class="btn" href="tel:171">171</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

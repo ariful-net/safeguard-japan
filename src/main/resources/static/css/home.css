@@ -1,0 +1,198 @@
+/* =========================================================
+   SafeGuard Japan — home.css（ホーム画面）
+   ========================================================= */
+
+/* ---------------- HERO ---------------- */
+.hero {
+  position: relative;
+  min-height: calc(100svh - var(--wx-h));
+  min-height: max(720px, calc(100svh - var(--wx-h)));
+  display: flex; flex-direction: column; justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero-bg { position: absolute; inset: 0; z-index: -1; }
+.hero-photo {
+  position: absolute; inset: 0 0 0 34%;
+  background: url("../img/hero-hanshin.jpg") 50% 38% / cover no-repeat;
+  filter: grayscale(.45) contrast(1.12) brightness(.62);
+  transform: scale(1.06);
+  animation: hero-drift 28s ease-in-out infinite alternate;
+}
+.hero-bg::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--ink) 0%, var(--ink) 33%, rgba(11,11,13,.55) 46%, rgba(11,11,13,.15) 70%, rgba(11,11,13,.55) 100%),
+    linear-gradient(180deg, rgba(11,11,13,.55) 0%, transparent 22%, transparent 62%, var(--ink) 100%);
+}
+@media (max-width: 720px) {
+  .hero-bg::after { background: linear-gradient(180deg, rgba(11,11,13,.7), rgba(11,11,13,.85) 60%, var(--ink)); }
+}
+.hero-moon {
+  position: absolute;
+  width: clamp(200px, 27vw, 400px); aspect-ratio: 1; border-radius: 50%;
+  right: clamp(24px, 13vw, 220px); top: clamp(110px, 15vh, 170px);
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255,140,140,.35), transparent 38%),
+    radial-gradient(circle at 62% 66%, rgba(60,0,10,.55), transparent 45%),
+    radial-gradient(circle at 50% 50%, #b3142c 0%, #8e0c20 58%, #5d0614 100%);
+  box-shadow: 0 0 120px 10px rgba(200,16,46,.28);
+  opacity: .88;
+  animation: moon-float 14s ease-in-out infinite alternate;
+}
+.hero-grain {
+  position: absolute; inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  opacity: .09; pointer-events: none;
+  animation: grain 1.2s steps(4) infinite;
+}
+@keyframes hero-drift { to { transform: scale(1.12) translate3d(-1.2%, -1%, 0); } }
+@keyframes moon-float { to { transform: translate3d(-10px, 14px, 0); } }
+@keyframes grain { 0% { transform: translate(0,0); } 25% { transform: translate(-3%,2%); } 50% { transform: translate(2%,-3%); } 75% { transform: translate(-2%,-1%); } }
+
+.hero-content { position: relative; z-index: 3; padding-top: calc(var(--header-h) + 40px); padding-bottom: 170px; }
+.hero-title { font-size: clamp(40px, 6.6vw, 96px); margin: 22px 0 26px; max-width: 13ch; }
+html[lang="ja"] .hero-title, html[lang="bn"] .hero-title { font-size: clamp(36px, 5.6vw, 80px); max-width: 15ch; }
+html[lang="vi"] .hero-title { font-size: clamp(36px, 5.6vw, 84px); max-width: 15ch; }
+.hero-title .line { display: block; overflow: hidden; animation: line-up .9s var(--ease) both; }
+.hero-title .line:nth-child(2) { animation-delay: .08s; }
+.hero-title .line:nth-child(3) { animation-delay: .16s; }
+.hero-title .accent { color: var(--crimson-hi); }
+@keyframes line-up { from { opacity: 0; transform: translateY(40%); } }
+.hero-lead { max-width: 46ch; animation: fade-in 1s .3s var(--ease) both; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; animation: fade-in 1s .45s var(--ease) both; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } }
+
+.hero-vertical {
+  position: absolute; z-index: 3; right: var(--gutter); top: calc(var(--header-h) + 70px);
+  writing-mode: vertical-rl; text-orientation: upright; font-family: var(--font-mincho); font-size: clamp(18px, 1.8vw, 26px);
+  line-height: 1; letter-spacing: .18em; color: var(--paper-dim); margin: 0; opacity: .85;
+}
+.hero-word {
+  position: absolute; z-index: 1; left: 0; right: 0; bottom: -5.2vw;
+  text-align: center; pointer-events: none; user-select: none;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 30vw; line-height: .8; letter-spacing: .06em;
+  background: linear-gradient(180deg, rgba(243,239,231,.30) 0%, rgba(243,239,231,.06) 70%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* 地震情報カード */
+.alert-card {
+  position: absolute; z-index: 4;
+  right: var(--gutter); bottom: 112px; width: min(360px, 92vw);
+  background: rgba(14,14,18,.72);
+  backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--line-strong); border-radius: var(--radius);
+  padding: 18px 20px 14px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
+  animation: fade-in 1s .6s var(--ease) both;
+}
+.alert-card[data-level="danger"] { border-color: rgba(232,51,74,.75); box-shadow: 0 0 0 1px rgba(232,51,74,.35), 0 30px 80px rgba(200,16,46,.25); }
+.alert-card[data-level="caution"] { border-color: rgba(224,165,38,.6); }
+.alert-card-head { display: flex; align-items: center; gap: 10px; font-size: 12px; margin-bottom: 10px; }
+.alert-card-label { font-weight: 600; letter-spacing: .04em; }
+.alert-card-auto { margin-left: auto; color: var(--muted); font-size: 10px; letter-spacing: .06em; }
+.alert-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); position: relative; flex: none; }
+.alert-pulse::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid currentColor; color: var(--ok); animation: pulse 2s infinite; }
+.alert-card[data-level="danger"] .alert-pulse, .alert-card[data-level="danger"] .alert-pulse::after { background: var(--crimson-hi); color: var(--crimson-hi); }
+.alert-card[data-level="caution"] .alert-pulse, .alert-card[data-level="caution"] .alert-pulse::after { background: var(--warn); color: var(--warn); }
+.alert-card[data-status="OFFLINE"] .alert-pulse { background: var(--muted); }
+.alert-card[data-level="danger"] .alert-pulse::after { background: transparent; }
+@keyframes pulse { from { transform: scale(.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
+.alert-shindo { font-family: var(--font-display); font-size: 40px; font-weight: 300; line-height: 1.1; }
+.alert-card[data-level="danger"] .alert-shindo { color: var(--crimson-hi); }
+.alert-meta { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13.5px; margin: 6px 0 2px; }
+.alert-meta b { font-weight: 600; }
+.alert-time { font-size: 11px; color: var(--muted); }
+.alert-msg { font-size: 13.5px; color: var(--paper-dim); margin: 10px 0 0; }
+.alert-stale { font-size: 12px; color: var(--warn); margin: 8px 0 0; }
+.alert-card-link { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--paper-dim); }
+.alert-card-link:hover { color: #fff; }
+
+/* 章番号インデックス（01 02 03 04） */
+.hero-index {
+  position: absolute; z-index: 4; left: 0; right: 0; bottom: 26px;
+  display: flex; gap: clamp(18px, 4vw, 56px);
+}
+.hero-index a { display: flex; flex-direction: column; gap: 2px; padding-top: 10px; border-top: 1px solid var(--line-strong); min-width: 72px; transition: border-color .3s; }
+.hero-index a:hover { border-top-color: var(--crimson-hi); }
+.hero-index .n { font-family: var(--font-display); font-size: clamp(22px, 2.4vw, 32px); font-weight: 300; line-height: 1; }
+.hero-index .t { font-size: 11.5px; color: var(--muted); letter-spacing: .06em; }
+
+@media (max-width: 1080px) {
+  .alert-card { position: relative; right: auto; bottom: auto; margin: -120px var(--gutter) 120px auto; }
+  .hero-content { padding-bottom: 140px; }
+}
+@media (max-width: 720px) {
+  .hero-photo { inset: 0; }
+  .hero { min-height: auto; }
+  .hero-content { padding-top: calc(var(--header-h) + 28px); padding-bottom: 36px; }
+  .hero-vertical { display: none; }
+  .hero-moon { right: -60px; top: 90px; width: 220px; }
+  .hero-word { font-size: 42vw; bottom: auto; top: 58%; }
+  .alert-card { margin: 0 var(--gutter) 110px; width: auto; }
+  .hero-index { gap: 14px; }
+  .hero-index a { min-width: 0; flex: 1; }
+  .hero-index .t { font-size: 10.5px; }
+}
+
+/* ---------------- 01 今すぐやること ---------------- */
+.type-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.type-tab { padding: 9px 18px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 14px; color: var(--paper-dim); transition: all .2s; }
+.type-tab:hover { color: #fff; border-color: var(--paper); }
+.type-tab.is-active { background: var(--paper); color: var(--ink); border-color: var(--paper); font-weight: 600; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.step { display: flex; gap: 18px; padding: 22px 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .25s; }
+.step:hover { background: var(--ink-2); }
+.step-n { color: var(--crimson-hi); font-size: 12px; padding-top: 4px; flex: none; }
+.step-text { margin: 0; font-size: 16px; line-height: 1.65; }
+.step:first-child { background: linear-gradient(135deg, rgba(200,16,46,.16), transparent 60%); }
+.step:first-child .step-text { font-weight: 600; }
+
+/* ---------------- 02 ストーリー動画 ---------------- */
+.story { background: radial-gradient(1200px 500px at 85% 0%, rgba(200,16,46,.10), transparent 60%); }
+.story-grid { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr); gap: clamp(18px, 3vw, 40px); align-items: start; }
+.story-player { margin: 0; }
+.story-player video { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius); border: 1px solid var(--line); }
+.story-player figcaption { font-size: 12.5px; margin-top: 10px; }
+.story-chapters { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); counter-reset: ch; }
+.story-chapters button {
+  width: 100%; display: grid; grid-template-columns: 58px 1fr; gap: 10px; align-items: center; text-align: left;
+  padding: 14px 6px; background: none; border: 0; border-bottom: 1px solid var(--line); color: var(--paper-dim);
+  font-size: 15px; transition: color .2s, padding .25s var(--ease);
+}
+.story-chapters button .mono { font-size: 12px; color: var(--muted); }
+.story-chapters button:hover { color: #fff; padding-left: 12px; }
+.story-chapters button.is-current { color: #fff; }
+.story-chapters button.is-current .mono { color: var(--crimson-hi); }
+@media (max-width: 900px) { .story-grid { grid-template-columns: 1fr; } }
+
+/* ---------------- 03 避難所 CTA ---------------- */
+.shelter-cta-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; }
+.shelter-cta .section-num { margin-bottom: 18px; }
+.radar { position: relative; aspect-ratio: 1; max-width: 460px; width: 100%; margin-left: auto; }
+.radar-ring { position: absolute; border: 1px solid var(--line-strong); border-radius: 50%; }
+.radar-ring.r1 { inset: 0; } .radar-ring.r2 { inset: 17%; } .radar-ring.r3 { inset: 34%; border-color: rgba(232,51,74,.4); }
+.radar-sweep { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, rgba(200,16,46,.28), transparent 22%); animation: sweep 5s linear infinite; }
+@keyframes sweep { to { transform: rotate(360deg); } }
+.radar-you { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: #4aa3ff; box-shadow: 0 0 0 6px rgba(74,163,255,.2); }
+.radar-pin { position: absolute; width: 12px; height: 12px; margin: -6px; border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 5px rgba(243,239,231,.12); }
+.radar-pin.p1 { left: 70.5%; top: 24%; background: var(--crimson-hi); box-shadow: 0 0 0 6px rgba(232,51,74,.25); }
+.radar-pin.p2 { left: 24%; top: 62%; } .radar-pin.p3 { left: 64%; top: 78%; }
+.radar-route { position: absolute; inset: 0; width: 100%; height: 100%; }
+.radar-route path { fill: none; stroke: var(--crimson-hi); stroke-width: 2.5; stroke-dasharray: 6 6; animation: dash 1.6s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+@media (max-width: 860px) { .shelter-cta-grid { grid-template-columns: 1fr; } .radar { max-width: 320px; margin: 0 auto; } }
+
+/* ---------------- 04 備え ---------------- */
+.prep-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.prep-card { position: relative; background: var(--ink); padding: 28px 24px 70px; min-height: 260px; overflow: hidden; transition: background .3s; }
+.prep-card:hover { background: var(--ink-2); }
+.prep-card h3 { font-family: var(--font-display); font-weight: 400; font-size: 22px; margin: 18px 0 10px; }
+.prep-card p { color: var(--paper-dim); font-size: 14.5px; margin: 0; }
+.prep-k { color: var(--crimson-hi); font-size: 12px; }
+.prep-jp { position: absolute; right: 16px; bottom: 6px; font-family: var(--font-mincho); font-size: 56px; color: rgba(243,239,231,.06); transition: color .3s; }
+.prep-card:hover .prep-jp { color: rgba(232,51,74,.25); }
+@media (max-width: 980px) { .prep-cards { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .prep-cards { grid-template-columns: 1fr; } .prep-card { min-height: 0; } }

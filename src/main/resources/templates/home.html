@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang}" lang="ja">
+<head>
+  <title th:text="#{home.title}">SafeGuard Japan</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body class="page-home">
+<div class="offline-banner" th:text="#{common.offline}">オフラインです</div>
+<div th:replace="~{fragments/layout :: weatherBar}"></div>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-photo"></div>
+    <div class="hero-moon"></div>
+    <div class="hero-grain"></div>
+  </div>
+
+  <header th:replace="~{fragments/layout :: siteHeader('home', true)}"></header>
+
+  <div class="hero-content container" id="main">
+    <span class="eyebrow" th:text="#{home.chapter}">CHAPTER 01 — 最初の1分</span>
+    <h1 class="display hero-title">
+      <span class="line" th:text="#{home.hero.line1}">揺れた瞬間、</span>
+      <span class="line" th:text="#{home.hero.line2}">次にやることが</span>
+      <span class="line accent" th:text="#{home.hero.line3}">わかる。</span>
+    </h1>
+    <p class="lead hero-lead" th:text="#{home.hero.lead}">地震・津波・大雨。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" th:href="@{/shelters(lang=${lang})}">
+        <span th:text="#{home.cta.shelter}">近くの避難所を探す</span><span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="btn" th:href="@{/prepare(lang=${lang})}" th:text="#{home.cta.prepare}">今日できる備え</a>
+    </div>
+  </div>
+
+  <p class="hero-vertical" aria-hidden="true" th:text="#{home.vertical}">備えあれば憂いなし</p>
+  <div class="hero-word" aria-hidden="true">SAFE</div>
+
+  <!-- 最新の地震情報カード（/api/alert で60秒ごとに更新） -->
+  <aside class="alert-card" id="alertCard"
+         th:attr="data-level=${alert.level()},data-status=${alert.status()}"
+         aria-live="polite">
+    <div class="alert-card-head">
+      <span class="alert-pulse" aria-hidden="true"></span>
+      <span class="alert-card-label" th:text="#{alert.card.label}">最新の地震情報</span>
+      <span class="alert-card-auto mono" th:text="#{alert.auto}">60秒ごとに自動更新</span>
+    </div>
+    <div class="alert-card-body" id="alertBody">
+      <th:block th:if="${alert.status() == 'OK'}">
+        <div class="alert-shindo" th:text="${alert.intensityText()}">震度4</div>
+        <div class="alert-meta">
+          <span><span class="muted" th:text="#{alert.area}">震源</span> <b th:text="${alert.area()}">大阪府北部</b></span>
+          <span th:if="${alert.magnitude() != null}"><span class="muted" th:text="#{alert.magnitude}">M</span> <b th:text="${alert.magnitude()}">5.0</b></span>
+        </div>
+        <time class="alert-time mono" th:attr="datetime=${alert.reportedAt()}" th:text="${alert.reportedAt()}"></time>
+        <p class="alert-msg" th:text="#{alert.level.__${alert.level()}__}">小さな揺れを観測しました。</p>
+        <p class="alert-stale" th:if="${alert.stale()}" th:text="#{alert.stale}"></p>
+      </th:block>
+      <p class="alert-msg" th:if="${alert.status() == 'NONE'}" th:text="#{alert.none}">情報はありません</p>
+      <p class="alert-msg" th:if="${alert.status() == 'OFFLINE'}" th:text="#{alert.offline}">オフライン</p>
+    </div>
+    <a class="alert-card-link" th:href="@{/alert-info(lang=${lang})}">
+      <span th:text="#{alert.more}">詳しく見る</span><span aria-hidden="true">↗</span>
+    </a>
+  </aside>
+
+  <nav class="hero-index container" aria-label="Sections">
+    <a href="#s-alert"><span class="n">01</span><span class="t" th:text="#{home.index.1}">警報</span></a>
+    <a href="#s-story"><span class="n">02</span><span class="t" th:text="#{home.index.2}">ストーリー</span></a>
+    <a href="#s-shelter"><span class="n">03</span><span class="t" th:text="#{home.index.3}">避難所</span></a>
+    <a href="#s-prepare"><span class="n">04</span><span class="t" th:text="#{home.index.4}">備え</span></a>
+  </nav>
+</section>
+
+<main>
+  <!-- ================= 01 今すぐやること ================= -->
+  <section class="section" id="s-alert">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-num" aria-hidden="true">01</div>
+        <div>
+          <span class="eyebrow" th:text="#{steps.title}">今すぐやること</span>
+          <h2 class="h-section" th:text="#{alert.heading}">いま、何をするか</h2>
+          <p class="lead" th:text="#{alert.lead}">災害の種類を選ぶと…</p>
+        </div>
+      </div>
+
+      <div class="type-tabs" role="list">
+        <a role="listitem" class="type-tab is-active" th:href="@{/alert-info(type='earthquake',lang=${lang})}" th:text="#{type.earthquake}">地震</a>
+        <a role="listitem" class="type-tab" th:href="@{/alert-info(type='tsunami',lang=${lang})}" th:text="#{type.tsunami}">津波</a>
+        <a role="listitem" class="type-tab" th:href="@{/alert-info(type='flood',lang=${lang})}" th:text="#{type.flood}">洪水・大雨</a>
+      </div>
+
+      <ol class="steps">
+        <li class="step" th:each="s, st : ${steps}">
+          <span class="step-n mono" th:text="${st.count < 10 ? '0' + st.count : st.count}">01</span>
+          <p class="step-text" th:text="${s.text()}">まず低く、頭を守り、動かない。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= 02 ストーリー動画 ================= -->
+  <section class="section story" id="s-story">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-num" aria-hidden="true">02</div>
+        <div>
+          <span class="eyebrow" th:text="#{story.chapter}">CHAPTER 02 — ストーリー</span>
+          <h2 class="h-section" th:text="#{story.title}">料理中に、揺れが来たら。</h2>
+          <p class="lead" th:text="#{story.lead}">留学生のアニカが…</p>
+        </div>
+      </div>
+
+      <div class="story-grid">
+        <figure class="story-player">
+          <video id="storyVideo" controls playsinline preload="metadata"
+                 th:poster="@{/video/evacuation-story-poster.jpg}" th:attr="data-lang=${lang}">
+            <source th:src="@{/video/evacuation-story.mp4}" type="video/mp4">
+            <track kind="subtitles" srclang="ja" label="日本語" th:src="@{/video/captions-ja.vtt}">
+            <track kind="subtitles" srclang="en" label="English" th:src="@{/video/captions-en.vtt}">
+            <track kind="subtitles" srclang="bn" label="বাংলা" th:src="@{/video/captions-bn.vtt}">
+            <track kind="subtitles" srclang="vi" label="Tiếng Việt" th:src="@{/video/captions-vi.vtt}">
+          </video>
+          <figcaption class="muted" th:text="#{story.note}">字幕は選択中の言語で表示されます。</figcaption>
+        </figure>
+
+        <ol class="story-chapters" id="storyChapters">
+          <li><button type="button" data-t="0"><span class="mono">00:00</span><span th:text="#{story.c1}">料理中</span></button></li>
+          <li><button type="button" data-t="6"><span class="mono">00:06</span><span th:text="#{story.c2}">緊急地震速報</span></button></li>
+          <li><button type="button" data-t="10"><span class="mono">00:10</span><span th:text="#{story.c3}">机の下で身を守る</span></button></li>
+          <li><button type="button" data-t="20"><span class="mono">00:20</span><span th:text="#{story.c4}">火とガスの確認</span></button></li>
+          <li><button type="button" data-t="25"><span class="mono">00:25</span><span th:text="#{story.c5}">靴をはく</span></button></li>
+          <li><button type="button" data-t="30"><span class="mono">00:30</span><span th:text="#{story.c6}">階段で避難</span></button></li>
+          <li><button type="button" data-t="36"><span class="mono">00:36</span><span th:text="#{story.c7}">公園へ</span></button></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 避難所 ================= -->
+  <section class="section shelter-cta" id="s-shelter">
+    <div class="container shelter-cta-grid">
+      <div>
+        <div class="section-num" aria-hidden="true">03</div>
+        <span class="eyebrow" th:text="#{sh.chapter}">CHAPTER 03 — 避難所</span>
+        <h2 class="h-section" th:text="#{sh.heading}">近くの避難所と、そこまでの道。</h2>
+        <p class="lead" th:text="#{sh.lead}">現在地から近い順に最大10件。</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" th:href="@{/shelters(lang=${lang})}">
+            <span th:text="#{home.cta.shelter}">近くの避難所を探す</span><span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+      <div class="radar" aria-hidden="true">
+        <div class="radar-ring r1"></div><div class="radar-ring r2"></div><div class="radar-ring r3"></div>
+        <div class="radar-sweep"></div>
+        <span class="radar-you"></span>
+        <span class="radar-pin p1"></span><span class="radar-pin p2"></span><span class="radar-pin p3"></span>
+        <svg class="radar-route" viewBox="0 0 400 400"><path d="M200 200 L200 150 L250 150 L250 105 L282 96" /></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 04 備え ================= -->
+  <section class="section" id="s-prepare">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-num" aria-hidden="true">04</div>
+        <div>
+          <span class="eyebrow" th:text="#{prep.chapter}">CHAPTER 04 — 備え</span>
+          <h2 class="h-section" th:text="#{prep.heading}">揺れる前に、決まっている。</h2>
+          <p class="lead" th:text="#{prep.lead}">最低3日分、できれば1週間分。</p>
+        </div>
+      </div>
+      <div class="prep-cards">
+        <a class="prep-card" th:href="@{/prepare(lang=${lang})} + '#food'">
+          <span class="prep-k mono">01</span>
+          <h3 th:text="#{prep.card.food}">食料と水</h3>
+          <p th:text="#{prep.card.food.text}">水は1人1日3リットル。</p>
+          <span class="prep-jp" aria-hidden="true">備蓄</span>
+        </a>
+        <a class="prep-card" th:href="@{/prepare(lang=${lang})} + '#general'">
+          <span class="prep-k mono">02</span>
+          <h3 th:text="#{prep.card.bag}">非常持ち出し袋</h3>
+          <p th:text="#{prep.card.bag.text}">在留カードのコピー、現金、充電器。</p>
+          <span class="prep-jp" aria-hidden="true">持出</span>
+        </a>
+        <a class="prep-card" th:href="@{/prepare(lang=${lang})} + '#general'">
+          <span class="prep-k mono">03</span>
+          <h3 th:text="#{prep.card.home}">部屋の安全</h3>
+          <p th:text="#{prep.card.home.text}">家具を固定。</p>
+          <span class="prep-jp" aria-hidden="true">固定</span>
+        </a>
+        <a class="prep-card" th:href="@{/safety-status(lang=${lang})}">
+          <span class="prep-k mono">04</span>
+          <h3 th:text="#{prep.card.family}">連絡の約束</h3>
+          <p th:text="#{prep.card.family.text}">集合場所と171の使い方を家族と共有。</p>
+          <span class="prep-jp" aria-hidden="true">連絡</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section th:replace="~{fragments/layout :: emergency}"></section>
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script th:src="@{/js/alert.js}"></script>
+<script th:src="@{/js/story-video.js}"></script>
+</body>
+</html>

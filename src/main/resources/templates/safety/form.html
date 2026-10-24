@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang}" lang="ja">
+<head>
+  <title th:text="#{safety.title}">安否メッセージ</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/pages.css}">
+</head>
+<body class="page-safety">
+<div class="offline-banner" th:text="#{common.offline}">オフラインです</div>
+<div th:replace="~{fragments/layout :: weatherBar}"></div>
+<header th:replace="~{fragments/layout :: siteHeader('safety', false)}"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow" th:text="#{safety.chapter}">CHAPTER 05 — 安否</span>
+      <h1 class="display" th:text="#{safety.heading}">無事を、一言で伝える。</h1>
+      <p class="lead" th:text="#{safety.lead}">状況を選ぶだけでメッセージができます。</p>
+    </div>
+  </section>
+
+  <section class="section safety-section">
+    <div class="container safety-grid">
+      <!-- 入力（JS で検証。サーバーには送信しない） -->
+      <form class="card safety-form" id="safetyForm" novalidate
+            th:attr="data-sent-url=@{/safety-status/sent(lang=${lang})}">
+        <fieldset class="status-list">
+          <legend class="field-label" th:text="#{safety.status}">いまの状況</legend>
+          <label class="status-opt" th:each="p, st : ${templates}">
+            <input type="radio" name="status" th:value="${p.id()}" th:checked="${st.first}"
+                   th:attr="data-text=${p.text()},data-text-ja=${p.textJa()}">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span th:text="${p.text()}">私は無事です。</span>
+          </label>
+        </fieldset>
+
+        <label class="field">
+          <span class="field-label" th:text="#{safety.shelterName}">いる場所（任意）</span>
+          <input type="text" id="sfPlace" maxlength="60" th:placeholder="#{safety.shelterPlaceholder}">
+        </label>
+
+        <label class="field">
+          <span class="field-label"><span th:text="#{safety.extra}">追加メッセージ（任意）</span>
+            <span class="counter mono" id="sfCounter">0/200</span></span>
+          <textarea id="sfExtra" rows="3" th:placeholder="#{safety.extraPlaceholder}" aria-describedby="sfError"></textarea>
+          <span class="field-error" id="sfError" role="alert"></span>
+        </label>
+
+        <label class="toggle"><input type="checkbox" id="sfLoc"><span class="toggle-ui" aria-hidden="true"></span><span th:text="#{safety.includeLocation}">現在地の地図リンクを付ける</span></label>
+        <label class="toggle" th:if="${lang != 'ja'}"><input type="checkbox" id="sfJa" checked><span class="toggle-ui" aria-hidden="true"></span><span th:text="#{safety.addJa}">日本語の文も付ける</span></label>
+      </form>
+
+      <!-- プレビュー -->
+      <div class="safety-preview">
+        <span class="field-label" th:text="#{safety.preview}">プレビュー</span>
+        <div class="bubble" id="sfPreview" aria-live="polite"></div>
+        <div class="safety-actions">
+          <button type="button" class="btn btn-primary" id="sfShare">
+            <span th:text="#{safety.share}">共有して送る</span><span class="arrow" aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="btn" id="sfCopy" th:text="#{safety.copy}">コピー</button>
+        </div>
+        <p class="muted small notice" th:text="#{safety.notice}">このメッセージはサーバーに送信されません。</p>
+
+        <div class="card info-171">
+          <h2 th:text="#{safety.171.title}">電話がつながらないとき</h2>
+          <p th:text="#{safety.171.text}">災害用伝言ダイヤル「171」</p>
+          <div class="hero-cta">
+            <a class="btn btn-sm" href="tel:171">171</a>
+            <a class="btn btn-sm" href="https://www.web171.jp/" target="_blank" rel="noopener">web171 ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section th:replace="~{fragments/layout :: emergency}"></section>
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script th:src="@{/js/safety.js}"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${lang}" lang="ja">
+<head>
+  <title th:text="#{prep.title}">防災の備え</title>
+  <th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+  <link rel="stylesheet" th:href="@{/css/pages.css}">
+</head>
+<body class="page-prepare">
+<div class="offline-banner" th:text="#{common.offline}">オフラインです</div>
+<div th:replace="~{fragments/layout :: weatherBar}"></div>
+<header th:replace="~{fragments/layout :: siteHeader('prepare', false)}"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow" th:text="#{prep.chapter}">CHAPTER 04 — 備え</span>
+      <h1 class="display" th:text="#{prep.heading}">揺れる前に、決まっている。</h1>
+      <p class="lead" th:text="#{prep.lead}">最低3日分、できれば1週間分。</p>
+    </div>
+  </section>
+
+  <!-- ===== 備蓄量カリキュレーター ===== -->
+  <section class="section calc-section">
+    <div class="container">
+      <div class="calc card" id="calc">
+        <div class="calc-head">
+          <h2 class="calc-title" th:text="#{prep.calc.title}">備蓄量カリキュレーター</h2>
+          <div class="calc-inputs">
+            <label class="stepper"><span th:text="#{prep.calc.people}">人数</span>
+              <span class="stepper-ctl">
+                <button type="button" data-step="people:-1" aria-label="-">−</button>
+                <input type="number" id="calcPeople" min="1" max="10" value="1" inputmode="numeric">
+                <button type="button" data-step="people:1" aria-label="+">+</button>
+              </span>
+            </label>
+            <fieldset class="days">
+              <legend th:text="#{prep.calc.days}">日数</legend>
+              <label class="seg"><input type="radio" name="days" value="3" checked><span>3</span></label>
+              <label class="seg"><input type="radio" name="days" value="7"><span>7</span></label>
+            </fieldset>
+          </div>
+        </div>
+        <div class="calc-out">
+          <div class="calc-cell"><span class="k" th:text="#{prep.calc.water}">飲料水</span><span class="v"><b id="outWater">9</b> <small th:text="#{unit.liter}">L</small></span></div>
+          <div class="calc-cell"><span class="k" th:text="#{prep.calc.meals}">食事</span><span class="v"><b id="outMeals">9</b> <small th:text="#{unit.meal}">食</small></span></div>
+          <div class="calc-cell"><span class="k" th:text="#{prep.calc.toilet}">携帯トイレ</span><span class="v"><b id="outToilet">15</b> <small th:text="#{unit.pcs}">個</small></span></div>
+          <div class="calc-cell"><span class="k" th:text="#{prep.calc.gas}">カセットボンベ</span><span class="v"><b id="outGas">3</b> <small th:text="#{unit.can}">本</small></span></div>
+        </div>
+        <p class="calc-note muted" th:text="#{prep.calc.note}">目安</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== チェックリスト（phrases: Food / General / Medical） ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="progress-row">
+        <div class="progress" aria-hidden="true"><span id="progBar"></span></div>
+        <span class="mono"><b id="progNum">0</b>% <span th:text="#{prep.progress}">準備済み</span></span>
+        <button type="button" class="btn btn-sm btn-ghost" id="checkReset" th:text="#{prep.reset}">リセット</button>
+      </div>
+
+      <div class="checklists">
+        <section class="checklist" id="food">
+          <h2 class="checklist-title"><span class="mono">A</span><span th:text="#{prep.list.food}">備蓄（食料・水）</span></h2>
+          <ul>
+            <li th:each="p : ${food}">
+              <label class="check"><input type="checkbox" th:attr="data-key='p' + ${p.id()}"><span class="box" aria-hidden="true"></span><span th:text="${p.text()}">—</span></label>
+            </li>
+          </ul>
+        </section>
+        <section class="checklist" id="general">
+          <h2 class="checklist-title"><span class="mono">B</span><span th:text="#{prep.list.general}">非常持ち出し・部屋の対策</span></h2>
+          <ul>
+            <li th:each="p : ${general}">
+              <label class="check"><input type="checkbox" th:attr="data-key='p' + ${p.id()}"><span class="box" aria-hidden="true"></span><span th:text="${p.text()}">—</span></label>
+            </li>
+          </ul>
+        </section>
+        <section class="checklist" id="medical">
+          <h2 class="checklist-title"><span class="mono">C</span><span th:text="#{prep.list.medical}">救急・衛生用品</span></h2>
+          <ul>
+            <li th:each="p : ${medical}">
+              <label class="check"><input type="checkbox" th:attr="data-key='p' + ${p.id()}"><span class="box" aria-hidden="true"></span><span th:text="${p.text()}">—</span></label>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <p class="muted small" th:text="#{prep.saved}">チェックはこの端末にだけ保存されます。</p>
+    </div>
+  </section>
+
+  <!-- ===== 災害別の行動 ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="h-section" th:text="#{prep.during}">災害別：そのとき、どう動くか</h2>
+      <div class="during" id="during">
+        <div class="type-tabs" role="tablist">
+          <button type="button" role="tab" class="type-tab is-active" aria-selected="true" aria-controls="tab-eq" th:text="#{type.earthquake}">地震</button>
+          <button type="button" role="tab" class="type-tab" aria-selected="false" aria-controls="tab-ts" th:text="#{type.tsunami}">津波</button>
+          <button type="button" role="tab" class="type-tab" aria-selected="false" aria-controls="tab-fl" th:text="#{type.flood}">洪水・大雨</button>
+        </div>
+        <ol class="steps" id="tab-eq" role="tabpanel">
+          <li class="step" th:each="s, st : ${stepsEarthquake}"><span class="step-n mono" th:text="${st.count < 10 ? '0' + st.count : st.count}">01</span><p class="step-text" th:text="${s.text()}">—</p></li>
+        </ol>
+        <ol class="steps" id="tab-ts" role="tabpanel" hidden>
+          <li class="step" th:each="s, st : ${stepsTsunami}"><span class="step-n mono" th:text="${st.count < 10 ? '0' + st.count : st.count}">01</span><p class="step-text" th:text="${s.text()}">—</p></li>
+        </ol>
+        <ol class="steps" id="tab-fl" role="tabpanel" hidden>
+          <li class="step" th:each="s, st : ${stepsFlood}"><span class="step-n mono" th:text="${st.count < 10 ? '0' + st.count : st.count}">01</span><p class="step-text" th:text="${s.text()}">—</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section th:replace="~{fragments/layout :: emergency}"></section>
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script th:src="@{/js/prepare.js}"></script>
+</body>
+</html>

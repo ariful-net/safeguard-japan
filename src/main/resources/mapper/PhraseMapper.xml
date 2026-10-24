@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.safeguard.mapper.PhraseMapper">
+
+    <resultMap id="phraseMap" type="jp.safeguard.model.entity.Phrase">
+        <id     property="id"        column="id"/>
+        <result property="category"  column="category"/>
+        <result property="textJa"    column="text_ja"/>
+        <result property="textEn"    column="text_en"/>
+        <result property="textBn"    column="text_bn"/>
+        <result property="textVi"    column="text_vi"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+
+    <select id="findByCategory" resultMap="phraseMap">
+        SELECT id, category, text_ja, text_en, text_bn, text_vi, sort_order
+          FROM phrases
+         WHERE category = #{category}
+         ORDER BY sort_order ASC, id ASC
+    </select>
+</mapper>

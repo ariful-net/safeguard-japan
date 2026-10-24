@@ -1,0 +1,109 @@
+/* =========================================================
+   SafeGuard Japan — shelters.css（避難所マップ・ナビ）
+   ========================================================= */
+.page-shelters { overflow: hidden; }
+.shelter-app {
+  display: grid;
+  grid-template-columns: minmax(340px, 430px) 1fr;
+  height: calc(100svh - var(--wx-h) - var(--header-h));
+}
+
+/* ---------- パネル ---------- */
+.sh-panel {
+  overflow-y: auto; overscroll-behavior: contain;
+  border-right: 1px solid var(--line);
+  padding: 26px clamp(18px, 2vw, 28px) 28px;
+  background: var(--ink);
+}
+.sh-heading { font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 1.25; margin: 12px 0 6px; }
+.sh-lead { font-size: 14px; margin: 0 0 22px; }
+.sh-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: var(--muted); letter-spacing: .06em; margin-bottom: 10px; padding: 0; }
+.sh-form { display: grid; gap: 18px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--ink-2); }
+.sh-types { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.sh-types legend { width: 100%; }
+.seg { position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.seg span { display: inline-block; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 13px; color: var(--paper-dim); transition: all .2s; }
+.seg input:checked + span { background: var(--paper); color: var(--ink); border-color: var(--paper); font-weight: 600; }
+.seg input:focus-visible + span { outline: 2px solid var(--crimson-hi); outline-offset: 2px; }
+.sh-radius output { color: var(--paper); font-size: 13px; }
+input[type="range"] { width: 100%; accent-color: var(--crimson); }
+.sh-actions .btn { width: 100%; }
+.sh-status { font-size: 13.5px; color: var(--paper-dim); min-height: 1.4em; margin: 14px 2px; }
+.sh-status.is-warn { color: var(--warn); }
+.sh-status.is-error { color: #ff9aa8; }
+
+.sh-count { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.sh-count b { color: var(--paper); font-size: 16px; }
+.sh-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.sh-item {
+  display: grid; grid-template-columns: 28px 1fr; gap: 12px;
+  padding: 16px 4px; border-bottom: 1px solid var(--line); cursor: pointer;
+  transition: background .2s;
+}
+.sh-item:hover, .sh-item.is-active { background: var(--ink-2); }
+.sh-item.is-active { box-shadow: inset 2px 0 0 var(--crimson-hi); }
+.sh-idx { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ink-4); font-family: var(--font-mono); font-size: 12px; }
+.sh-item:first-child .sh-idx { background: var(--crimson); color: #fff; }
+.sh-name { font-weight: 600; font-size: 15.5px; line-height: 1.35; }
+.sh-name-ja { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.sh-addr { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.sh-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 8px; font-size: 13px; }
+.sh-dist { font-family: var(--font-display); font-size: 18px; font-weight: 500; }
+.sh-walk { color: var(--paper-dim); }
+.sh-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+.sh-tags .chip { font-size: 11px; padding: 2px 8px; }
+.sh-item-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+/* ---------- ナビゲーション ---------- */
+.sh-nav { border: 1px solid rgba(232,51,74,.45); border-radius: var(--radius); padding: 18px; background: linear-gradient(160deg, rgba(200,16,46,.14), var(--ink-2) 55%); margin-top: 4px; }
+.sh-nav-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.sh-nav-dest { font-family: var(--font-display); font-weight: 500; font-size: 22px; margin: 12px 0 14px; line-height: 1.3; }
+.sh-nav-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.sh-nav-stats > div { background: var(--ink-2); padding: 12px 14px; display: grid; gap: 2px; }
+.sh-nav-stats .k { font-size: 11.5px; color: var(--muted); }
+.sh-nav-stats .v { font-size: 22px; font-family: var(--font-display); display: flex; align-items: center; gap: 8px; }
+.nav-arrow { width: 22px; height: 22px; color: var(--crimson-hi); transition: transform .4s var(--ease); }
+.sh-nav-eta { margin: 12px 0 0; font-size: 14px; color: var(--paper-dim); }
+.sh-nav-msg { margin: 8px 0 0; font-size: 13.5px; color: var(--warn); min-height: 1em; }
+.sh-nav-msg.is-ok { color: #a7e6cd; font-weight: 600; }
+.sh-steps { list-style: none; margin: 14px 0 0; padding: 0; max-height: 260px; overflow-y: auto; border-top: 1px solid var(--line); }
+.sh-steps li { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.sh-steps li .d { font-family: var(--font-mono); color: var(--muted); font-size: 12px; }
+.sh-steps li.is-next { color: #fff; font-weight: 600; }
+.sh-nav-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.sh-sample { font-size: 11.5px; color: var(--muted); margin: 22px 0 0; line-height: 1.6; }
+
+/* ---------- 地図 ---------- */
+.sh-map-wrap { position: relative; background: #0f1013; }
+.sh-map { position: absolute; inset: 0; }
+.sh-map-offline { display: none; position: absolute; left: 50%; top: 18px; transform: translateX(-50%); z-index: 500; background: rgba(11,11,13,.9); border: 1px solid var(--line-strong); padding: 8px 14px; border-radius: 999px; font-size: 12.5px; }
+body.is-offline .sh-map-offline { display: block; }
+
+/* Leaflet をダークテーマに合わせる（タイルは少し暗く） */
+.leaflet-container { background: #0f1013; font-family: var(--font-body); }
+.leaflet-tile-pane { filter: grayscale(.35) brightness(.78) contrast(1.05); }
+.leaflet-control-attribution { background: rgba(11,11,13,.75) !important; color: var(--muted) !important; }
+.leaflet-control-attribution a { color: var(--paper-dim) !important; }
+.leaflet-bar a { background: var(--ink-2); color: var(--paper); border-bottom-color: var(--line) !important; }
+.leaflet-bar a:hover { background: var(--ink-3); }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--ink-2); color: var(--paper); border: 1px solid var(--line-strong); }
+.leaflet-popup-content { margin: 12px 14px; font-size: 13px; line-height: 1.5; }
+.leaflet-popup-content b { font-size: 14px; }
+.leaflet-container a.leaflet-popup-close-button { color: var(--muted); }
+
+.pin { width: 30px; height: 30px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--paper); border: 2px solid #0b0b0d; display: grid; place-items: center; box-shadow: 0 6px 16px rgba(0,0,0,.5); }
+.pin span { transform: rotate(45deg); font: 600 12px/1 var(--font-mono); color: #0b0b0d; }
+.pin.is-first, .pin.is-active { background: var(--crimson); }
+.pin.is-first span, .pin.is-active span { color: #fff; }
+.you-dot { width: 18px; height: 18px; border-radius: 50%; background: #4aa3ff; border: 3px solid #fff; box-shadow: 0 0 0 8px rgba(74,163,255,.25); }
+.you-dot.is-default { background: var(--warn); box-shadow: 0 0 0 8px rgba(224,165,38,.25); }
+
+/* ---------- スマホ ---------- */
+@media (max-width: 860px) {
+  .page-shelters { overflow: auto; }
+  .shelter-app { grid-template-columns: 1fr; grid-template-rows: 46svh auto; height: auto; }
+  .sh-map-wrap { grid-row: 1; position: sticky; top: var(--header-h); z-index: 1; height: 46svh; }
+  .sh-panel { grid-row: 2; border-right: 0; overflow: visible; position: relative; z-index: 2; background: var(--ink); border-top: 1px solid var(--line); }
+  .sh-heading { font-size: 22px; }
+}
