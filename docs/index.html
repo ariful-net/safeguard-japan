@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SafeGuard Japan</title>
+<meta name="description" content="日本で暮らす留学生のための多言語（日本語 / English / বাংলা / Tiếng Việt）防災 Web アプリ。">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;800&family=Inter:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;700&family=Noto+Sans+Bengali:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #0b0b0d; --ink-2: #121216; --ink-3: #1a1a20;
+    --line: rgba(243,239,231,.10); --line-strong: rgba(243,239,231,.22);
+    --paper: #f3efe7; --paper-dim: #cfcac0; --muted: #8f8a82;
+    --crimson: #c8102e; --crimson-hi: #e8334a; --lantern: #e2b66d;
+    --font-display: "Inter Tight", "Zen Kaku Gothic New", "Noto Sans Bengali", system-ui, sans-serif;
+    --font-body: "Inter", "Zen Kaku Gothic New", "Noto Sans Bengali", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --gutter: clamp(16px, 4vw, 56px);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(--font-body); line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; }
+  img, video { display: block; max-width: 100%; }
+  :focus-visible { outline: 2px solid var(--crimson-hi); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
+
+  header.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; }
+  .brand { font-family: var(--font-display); font-weight: 800; letter-spacing: .02em; display: flex; gap: 10px; align-items: center; text-decoration: none; }
+  .brand::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--crimson); box-shadow: 0 0 18px var(--crimson); }
+  .top nav a { color: var(--paper-dim); text-decoration: none; font-size: 14px; margin-left: 20px; }
+  .top nav a:hover { color: var(--paper); }
+
+  .hero { padding: clamp(48px, 10vw, 120px) 0 clamp(40px, 7vw, 80px); position: relative; }
+  .hero::after { content: ""; position: absolute; inset: -20% -10% auto auto; width: 520px; height: 520px; background: radial-gradient(circle, rgba(200,16,46,.28), transparent 65%); pointer-events: none; z-index: -1; }
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; color: var(--lantern); text-transform: uppercase; }
+  h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 8vw, 88px); line-height: 1.08; margin: 16px 0 24px; letter-spacing: -.01em; }
+  h1 .accent { color: var(--crimson-hi); }
+  .lead { font-size: clamp(16px, 2.2vw, 19px); color: var(--paper-dim); max-width: 38em; margin: 0 0 32px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+  .langs span { border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px 12px; font-size: 13px; color: var(--paper-dim); }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 22px; border-radius: 10px; font-weight: 500; text-decoration: none; border: 1px solid var(--line-strong); }
+  .btn.primary { background: var(--crimson); border-color: var(--crimson); color: #fff; }
+  .btn.primary:hover { background: var(--crimson-hi); }
+  .btn:not(.primary):hover { border-color: var(--paper-dim); }
+  .note { font-size: 13px; color: var(--muted); margin-top: 14px; }
+
+  section { padding: clamp(48px, 8vw, 96px) 0; border-top: 1px solid var(--line); }
+  h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(26px, 4vw, 40px); margin: 8px 0 28px; line-height: 1.2; }
+
+  .video { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #000; aspect-ratio: 16 / 9; }
+  .video video { width: 100%; height: 100%; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .card { background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+  .card .num { font-family: var(--font-mono); font-size: 12px; color: var(--crimson-hi); }
+  .card h3 { font-family: var(--font-display); font-size: 19px; margin: 8px 0 8px; }
+  .card p { margin: 0; color: var(--paper-dim); font-size: 15px; }
+  .card code { font-family: var(--font-mono); font-size: 12px; color: var(--muted); display: block; margin-top: 14px; }
+
+  .stack { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stack span { background: var(--ink-3); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; font-family: var(--font-mono); font-size: 13px; color: var(--paper-dim); }
+
+  .caution { background: rgba(226,182,109,.07); border: 1px solid rgba(226,182,109,.3); border-radius: 14px; padding: 22px 24px; }
+  .caution ul { margin: 0; padding-left: 1.2em; color: var(--paper-dim); font-size: 15px; }
+  .caution li + li { margin-top: 6px; }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+  @media (max-width: 560px) { .top nav a:not(:last-child) { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#">SafeGuard Japan</a>
+    <nav>
+      <a href="#story">ストーリー</a>
+      <a href="#features">機能</a>
+      <a href="https://github.com/ariful-net/safeguard-japan">GitHub</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <span class="eyebrow">Disaster guide for international students</span>
+    <h1>揺れた瞬間、<br>次にやることが<br><span class="accent">わかる。</span></h1>
+    <p class="lead">地震・津波・大雨。日本で暮らす留学生が、自分の言葉ですぐに動けるようにするための多言語防災 Web アプリです。</p>
+    <div class="langs" aria-label="対応言語">
+      <span lang="ja">日本語</span><span lang="en">English</span><span lang="bn">বাংলা</span><span lang="vi">Tiếng Việt</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="https://safeguard-japan.onrender.com/">アプリを開く →</a>
+      <a class="btn" href="https://github.com/ariful-net/safeguard-japan">ソースコード</a>
+    </div>
+    <p class="note">無料サーバーのため、しばらく使われていないと最初の表示に 30 秒〜1 分ほどかかります。</p>
+  </div>
+</div>
+
+<section id="story">
+  <div class="wrap">
+    <span class="eyebrow">Story</span>
+    <h2>44 秒でわかる、避難の流れ</h2>
+    <div class="video">
+      <video controls preload="metadata" playsinline poster="assets/evacuation-story-poster.jpg">
+        <source src="assets/evacuation-story.mp4" type="video/mp4">
+        <track kind="captions" src="assets/captions-ja.vtt" srclang="ja" label="日本語" default>
+        <track kind="captions" src="assets/captions-en.vtt" srclang="en" label="English">
+        <track kind="captions" src="assets/captions-bn.vtt" srclang="bn" label="বাংলা">
+        <track kind="captions" src="assets/captions-vi.vtt" srclang="vi" label="Tiếng Việt">
+      </video>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <span class="eyebrow">Features</span>
+    <h2>できること</h2>
+    <div class="grid">
+      <div class="card"><span class="num">01</span><h3>災害情報</h3><p>気象庁の最新の地震情報を、震度と地域を選んだ言語に直して表示。警報の種類ごとに取るべき行動を示します。</p><code>/alert-info</code></div>
+      <div class="card"><span class="num">02</span><h3>避難所マップ</h3><p>現在地から近い避難所を地図で探し、徒歩ルート・所要時間・到着判定まで案内します。</p><code>/shelters</code></div>
+      <div class="card"><span class="num">03</span><h3>安否メッセージ</h3><p>家族や学校に送る安否メッセージを多言語で作成。内容はサーバーに送りません。</p><code>/safety-status</code></div>
+      <div class="card"><span class="num">04</span><h3>防災の備え</h3><p>人数と日数から備蓄量を計算するカリキュレーターと、チェックリスト、災害別の行動。</p><code>/prepare</code></div>
+      <div class="card"><span class="num">05</span><h3>天気バー</h3><p>現在地の天気を常に画面上部に表示。大雨への備えに。</p><code>/api/weather</code></div>
+      <div class="card"><span class="num">06</span><h3>オフライン対応</h3><p>Service Worker で、通信が不安定なときも基本画面を表示できます。</p><code>sw.js</code></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Tech</span>
+    <h2>技術スタック</h2>
+    <div class="stack">
+      <span>Java 17</span><span>Spring Boot 3.3</span><span>Thymeleaf</span><span>MyBatis</span><span>H2 / MariaDB</span><span>Caffeine</span><span>Leaflet + OpenStreetMap</span><span>Service Worker</span><span>Render (Docker)</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="caution">
+      <span class="eyebrow">Note</span>
+      <h2 style="margin-bottom:16px">ご利用にあたって</h2>
+      <ul>
+        <li>学習用のプロジェクトです。避難所データはサンプルで、位置や対応災害は確認されていません。</li>
+        <li>正式な警報・注意報は気象庁、避難所はお住まいの自治体の情報を必ず確認してください。</li>
+        <li>徒歩ルートは FOSSGIS の公開 OSRM サーバー、天気は Open-Meteo を利用しています。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <span>SafeGuard Japan</span>
+    <a href="https://github.com/ariful-net/safeguard-japan">github.com/ariful-net/safeguard-japan</a>
+  </footer>
+</div>
+</body>
+</html>
