@@ -5,10 +5,23 @@
 天気バー・防災の備え画面・ストーリー動画を追加している。
 
 ## 技術スタック
-Java 17 / Spring Boot 3.3 / Thymeleaf / MyBatis / MariaDB / Caffeine / RestClient /
+Java 17 / Spring Boot 3.3 / Thymeleaf / MyBatis / H2（既定）・MariaDB / Caffeine / RestClient /
 素の JavaScript / Leaflet + OpenStreetMap / Service Worker
 
-## 起動手順
+## 起動手順（かんたん: 組み込み H2）
+DB の準備は不要。起動時に `db/01〜03` の SQL を組み込み H2（MariaDB 互換モード）へ読み込む。
+```
+./mvnw spring-boot:run
+```
+http://localhost:8080/ を開く。テストは `./mvnw test`
+（JDK 25 では Mockito が動かないため `./mvnw test -DargLine=-Dnet.bytebuddy.experimental=true`、または JDK 17/21 を使う）。
+
+## 公開（Render）
+`Dockerfile` と `render.yaml` で Render の無料プランに置ける。
+Render で「New → Blueprint」からこのリポジトリを選ぶと、`main` への push ごとに自動デプロイされる。
+無料プランは 15 分アクセスがないとスリープし、次のアクセスで 30 秒〜1 分ほど起動を待つ。
+
+## 起動手順（MariaDB を使う場合）
 1. MariaDB で `db/` の SQL を番号順に実行（00 は管理者ユーザーで）
    ```
    mysql -u root -p < db/00_create_database_and_user.sql
@@ -18,7 +31,7 @@ Java 17 / Spring Boot 3.3 / Thymeleaf / MyBatis / MariaDB / Caffeine / RestClien
    ```
 2. DB パスワードを環境変数で渡して起動
    ```
-   DB_USER=safeguard_app DB_PASSWORD=change-me mvn spring-boot:run
+   DB_USER=safeguard_app DB_PASSWORD=change-me ./mvnw spring-boot:run -Dspring-boot.run.profiles=mariadb
    ```
 3. http://localhost:8080/ を開く（GPS・Service Worker は localhost か HTTPS でのみ動く）
 4. テスト: `mvn test`（ShelterServiceTest / AlertServiceTest / ShelterSearchFormTest）

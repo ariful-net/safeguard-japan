@@ -47,7 +47,7 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
-        <!-- DB (MyBatis + MariaDB) -->
+        <!-- DB (MyBatis + H2 組み込み / ローカルは MariaDB も可) -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -56,6 +56,11 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
 
@@ -68,6 +73,16 @@
     </dependencies>
 
     <build>
+        <!-- db/*.sql を classpath:db/ に入れ、起動時に H2 へ読み込む -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>db</directory>
+                <targetPath>db</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: safeguard-japan
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: main
+    healthCheckPath: /
+    autoDeploy: true
